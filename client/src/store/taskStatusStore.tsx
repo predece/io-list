@@ -4,6 +4,7 @@ class Task {
   onClickOpenWindowNewTask: boolean = false; // Создание task
   onClickOpenwindowTitleTask: boolean = false; // Открытие окна "Входящие"
   onClickOpenWindowDoneTask: boolean = false; // Открытие окна "Выполнено"
+  onClickOpenWindowExpiredTask: boolean = false; // Открытие окна "Просрочено"
   constructor() {
     makeAutoObservable(this);
   }
@@ -22,14 +23,22 @@ class Task {
       this.onClickOpenWindowDoneTask = status;
     }
   }
+  postWindowExpiredTask(status: boolean) {
+    if (this.onClickOpenWindowExpiredTask != status) {
+      this.onClickOpenWindowExpiredTask = status;
+    }
+  }
   getWindowTask() {
     return this.onClickOpenWindowNewTask;
   }
   getWindowTitleTask() {
     return this.onClickOpenwindowTitleTask;
   }
-  gettWindowDoneTask() {
+  getWindowDoneTask() {
     return this.onClickOpenWindowDoneTask;
+  }
+  getWindowExpiredTask() {
+    return this.onClickOpenWindowExpiredTask;
   }
 }
 

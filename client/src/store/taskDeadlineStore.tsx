@@ -42,10 +42,10 @@ class TaskDeadline {
     return toJS(this.task);
   }
   getTaskDeadline() {
-    return this.taskDeadline;
+    return toJS(this.taskDeadline);
   }
   getTaskFinished() {
-    return this.taskFinished;
+    return toJS(this.taskFinished);
   }
 }
 

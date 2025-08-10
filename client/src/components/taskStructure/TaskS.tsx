@@ -94,7 +94,7 @@ const TaskS = ({ caseId }: Itasks) => {
       console.error(e);
     }
   }, []);
-
+  console.log(taskNow.getTaskFinished());
   return (
     <div className="font-normal text-[15px] ">
       {caseId == 1 &&
@@ -123,48 +123,54 @@ const TaskS = ({ caseId }: Itasks) => {
           </a>
         ))}
       {caseId == 2 &&
-        taskNow.getTaskDeadline().length > 0 &&
-        taskNow.getTaskDeadline().map((taskData: any) => (
-          <section key={taskData.id} className="grid h-full mt-2">
-            <div className="flex ">
-              <div className="flex h-5 w-7">
-                <input onClick={() => fuFinishedTask(taskData.id)} type="radio" className="cursor-pointer" />
-              </div>
-              <div className="grid w-full">
-                <div className="flex  items-center justify-between">
-                  <div className="">{taskData.title}</div>
-                  <div>{taskData.priority}</div>
+        (taskNow.getTaskDeadline().length > 0 ? (
+          taskNow.getTaskDeadline().map((taskData: any) => (
+            <section key={taskData.id} className="grid h-full mt-2">
+              <div className="flex ">
+                <div className="flex h-5 w-7">
+                  <input onClick={() => fuFinishedTask(taskData.id)} type="radio" className="cursor-pointer" />
                 </div>
-                {taskData.description && <div className="text-[13px] text-gray-500">{taskData.description}</div>}
-                {checkIdDate(taskData.id)}
+                <div className="grid w-full">
+                  <div className="flex  items-center justify-between">
+                    <div className="">{taskData.title}</div>
+                    <div>{taskData.priority}</div>
+                  </div>
+                  {taskData.description && <div className="text-[13px] text-gray-500">{taskData.description}</div>}
+                  {checkIdDate(taskData.id)}
+                </div>
               </div>
-            </div>
-            <hr className="mb-2 text-gray-500/10" />
-          </section>
+              <hr className="mb-2 text-gray-500/10" />
+            </section>
+          ))
+        ) : (
+          <div className="font-normal text-[14px] text-gray-500 mt-1 cursor-pointer hover:text-gray-600 duration-300 ease-in-out">У вас нет просроченных задач!</div>
         ))}
       {caseId == 3 &&
-        taskNow.getTaskFinished().length > 0 &&
-        taskNow.getTaskFinished().map((taskData: any) => (
-          <section key={taskData.id} className="grid h-full mt-2">
-            <div className="flex ">
-              <div className="grid h-5  w-7 justify-center ">
-                <div>✅</div>
-                <Image alt="reloadTask" src="/ReloadTask.svg" width={17} height={17} className="cursor-pointer" />
-              </div>
-              <div className="grid w-full">
-                <div className="flex  items-center justify-between">
-                  <div className="">{taskData.title}</div>
-                  <div>{taskData.priority}</div>
+        (taskNow.getTaskFinished().length > 0 ? (
+          taskNow.getTaskFinished().map((taskData: any) => (
+            <section key={taskData.id} className="grid h-full mt-2">
+              <div className="flex ">
+                <div className="grid h-5  w-7 justify-center ">
+                  <div>✅</div>
+                  <Image alt="reloadTask" src="/ReloadTask.svg" width={17} height={17} className="cursor-pointer" />
                 </div>
-                {taskData.description && <div className="text-[13px] text-gray-500">{taskData.description}</div>}
-                <div className="flex justify-between">
-                  {checkIdDate(taskData.id)}
-                  <Image onClick={() => fuDeleteTask(taskData.id)} alt="basket" src="/BasketTask.svg" width={17} height={17} className="cursor-pointer" />
+                <div className="grid w-full">
+                  <div className="flex  items-center justify-between">
+                    <div className="">{taskData.title}</div>
+                    <div>{taskData.priority}</div>
+                  </div>
+                  {taskData.description && <div className="text-[13px] text-gray-500">{taskData.description}</div>}
+                  <div className="flex justify-between">
+                    {checkIdDate(taskData.id)}
+                    <Image onClick={() => fuDeleteTask(taskData.id)} alt="basket" src="/BasketTask.svg" width={17} height={17} className="cursor-pointer" />
+                  </div>
                 </div>
               </div>
-            </div>
-            <hr className="mb-2 text-gray-500/10" />
-          </section>
+              <hr className="mb-2 text-gray-500/10" />
+            </section>
+          ))
+        ) : (
+          <div className="font-normal text-[14px] text-gray-500 mt-1 cursor-pointer hover:text-gray-600 duration-300 ease-in-out">У вас нет выполненных задач!</div>
         ))}
     </div>
   );

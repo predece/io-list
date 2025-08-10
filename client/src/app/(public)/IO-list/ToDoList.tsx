@@ -10,6 +10,8 @@ import ErrorMessage from "@/error/errorMessage";
 import Loading from "../../../components/Loading";
 import NewTask from "../../../components/NewTask";
 import TaskInComplite from "@/components/TaskInComplite";
+import TaskDone from "@/components/TaskDone";
+import TaskExpired from "@/components/TaskExpired";
 
 const ToDoList = () => {
   const { store, user, task, taskNow } = useContext(Context);
@@ -148,10 +150,26 @@ const ToDoList = () => {
                     activeButton === "incoming" ? "bg-active-menu-task-color rounded hover:bg-active-menu-task-color" : "hover:bg-hover-color"
                   }`}
                   onClick={() => {
-                    task.postWindowTitleTask(true), setActiveButton("incoming");
+                    setActiveButton("incoming");
+                    task.postWindowTitleTask(true);
+                    task.postWindowDoneTask(false);
+                    task.postWindowExpiredTask(false);
                   }}
                 >
                   Входящие
+                </button>
+                <button
+                  className={`text-[15px] border-border-color  p-1  w-full text-left  transition-colors duration-200 ease-in-out cursor-pointer ${
+                    activeButton === "expired" ? "bg-active-menu-task-color rounded hover:bg-active-menu-task-color" : "hover:bg-hover-color"
+                  }`}
+                  onClick={() => {
+                    setActiveButton("expired");
+                    task.postWindowTitleTask(false);
+                    task.postWindowDoneTask(false);
+                    task.postWindowExpiredTask(true);
+                  }}
+                >
+                  Просрочены
                 </button>
                 <button
                   className={`text-[15px] border-border-color  p-1  w-full text-left transition-colors duration-200 ease-in-out cursor-pointer ${
@@ -160,6 +178,8 @@ const ToDoList = () => {
                   onClick={() => {
                     setActiveButton("done");
                     task.postWindowTitleTask(false);
+                    task.postWindowDoneTask(true);
+                    task.postWindowExpiredTask(false);
                   }}
                 >
                   Выполнено
@@ -171,9 +191,21 @@ const ToDoList = () => {
           <section></section>
         )}
         <section className="flex justify-center h-screen mt-30">
-          <div className="max-w-[700px] w-full">
-            <TaskInComplite />
-          </div>
+          {task.getWindowTitleTask() && (
+            <div className="max-w-[700px] w-full">
+              <TaskInComplite />
+            </div>
+          )}
+          {task.getWindowExpiredTask() && (
+            <div className="max-w-[700px] w-full">
+              <TaskExpired />
+            </div>
+          )}
+          {task.getWindowDoneTask() && (
+            <div className="max-w-[700px] w-full">
+              <TaskDone />
+            </div>
+          )}
         </section>
         <ErrorMessage />
         <Loading />
