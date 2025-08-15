@@ -18,7 +18,9 @@ const TaskNotifications = () => {
     }
     socket.on("taskUserConnectionId", (task) => {
       taskNow.postTask(task.task);
-      // console.log(TaskDeadlineStore.getTask());
+    });
+    socket.on("expiredTask", (task) => {
+      taskNow.postTaskDeadline(task.task);
     });
   }, []);
 

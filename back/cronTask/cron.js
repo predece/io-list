@@ -6,7 +6,7 @@ const { connectionGetUser } = require("../socket/user");
 
 class Cron {
   checkCron() {
-    cron.schedule("*/5 * * * * *", async () => {
+    cron.schedule("*/1 * * * * *", async () => {
       try {
         console.log("Проверка дедлайна задач");
 
@@ -34,13 +34,35 @@ class Cron {
             }
 
             await sendNotification(task);
-            // await task.update({ notified: true });
+            await task.update({ notified: true });
           }
 
           console.log(`Отправелно ${dueTasks.length} уведомлений о дедлайнах`);
         }
       } catch (e) {
         console.error("Ошибка при проверке дедлайнов", e);
+      }
+    });
+    cron.schedule("*/1 * * * * *", async () => {
+      try {
+        const NowDate = new Date();
+        const ExpiredTask = await Task.findAll({
+          where: {
+            deadline: {
+              [Op.lte]: NowDate,
+            },
+          },
+        });
+        if (ExpiredTask.length) {
+          for (const task of ExpiredTask) {
+            const io = getIo();
+            const ConnectionId = connectionGetUser(task);
+            io.to(ConnectionId).emit("expiredTask", task);
+            task.update({ status: "expired" });
+          }
+        }
+      } catch (e) {
+        console.error(e);
       }
     });
   }

@@ -14,12 +14,17 @@ export const GetTask = async () => {
 };
 
 export const FinishedTask = async (id: number) => {
-  const { data } = await $host.get(`api/task/${id}`);
+  const { data } = await $host.get(`api/task/delete/${id}`);
   return data;
 };
 
 export const DeleteTask = async (id: number) => {
-  const { data } = await $host.delete(`api/task/${id}`);
+  const { data } = await $host.delete(`api/task/delete/${id}`);
+  return data;
+};
+
+export const UpdateTassk = async (config: Itask) => {
+  const { data } = await $host.post("api/task/update", config);
   return data;
 };
 

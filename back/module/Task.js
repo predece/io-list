@@ -29,7 +29,7 @@ module.exports = sequelize.define("task", {
     defaultValue: "medium",
   },
   status: {
-    type: DataTypes.ENUM("todo", "in_progress", "done"),
+    type: DataTypes.ENUM("todo", "expired", "done"),
     defaultValue: "todo",
   },
   notified: {

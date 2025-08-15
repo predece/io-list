@@ -63,6 +63,19 @@ class TaskController {
       console.log(e);
     }
   }
+  async UpdateTask(req, res) {
+    try {
+      const { id, title, description, deadline, priority } = req.body;
+      const checkTask = await Task.findByPk(id);
+      if (!checkTask) {
+        return res.json({ message: "Task not found" });
+      }
+      const UpdateTask = await checkTask.update({ title, description, deadline, priority, notified: false, status: "todo" });
+      return res.json(UpdateTask);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
 
 module.exports = new TaskController();

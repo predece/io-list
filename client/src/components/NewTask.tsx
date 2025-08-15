@@ -12,7 +12,7 @@ import { AddTask } from "@/http/Task";
 const buttonStyle = "border p-1 rounded hover:bg-hover-color transition-colors duration-400 ease-in-out cursor-pointer w-30 text-gray-400 border-gray-300";
 
 const NewTask = () => {
-  const { task } = useContext(Context);
+  const { task, taskNow } = useContext(Context);
   const inputRef = useRef(null);
   const [stateWindow, setStateWindow] = useState({
     PriorityWindow: false,
@@ -77,7 +77,8 @@ const NewTask = () => {
   const fuNewTask = async () => {
     if (config.title && config.deadline) {
       const data = await AddTask(config);
-      console.log(data);
+      task.postWindowTask(false);
+      taskNow.postTask(data);
     }
   };
   return (
