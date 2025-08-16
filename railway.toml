@@ -1,0 +1,5 @@
+[build]
+  appDirectory = "back"
+
+[deploy]
+  startCommand = "cd back && node server.js"
