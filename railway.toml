@@ -2,4 +2,4 @@
   appDirectory = "back"
 
 [deploy]
-  startCommand = "cd back && npm start"
+  startCommand = "npm start"
