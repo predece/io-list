@@ -1,16 +1,22 @@
 import { makeAutoObservable } from "mobx";
 
+interface ImessageConf {
+  quantity: number;
+  status: boolean;
+}
+
 class NewMessage {
-  message: string = "";
+  config: ImessageConf = { quantity: 0, status: false };
   constructor() {
     makeAutoObservable(this);
   }
-  postMessage(message: string) {
-    this.message = message;
+  postQuantity(page: number) {
+    this.config.quantity = page;
   }
-  getMessage() {
-    return this.message;
+
+  getQuantity() {
+    return this.config.quantity;
   }
 }
 
-export const message = new NewMessage();
+export const Message = new NewMessage();

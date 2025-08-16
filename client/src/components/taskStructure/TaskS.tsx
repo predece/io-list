@@ -30,7 +30,6 @@ const TaskS = ({ caseId }: Itasks) => {
   const { taskNow, task } = useContext(Context);
   const [dateConfig, setDateConfig] = useState<IformDate[]>([]);
   const [timers, setTimers] = useState<ItimerState>({});
-  const intervalsRef = useRef<{ [key: number]: NodeJS.Timeout }>({}); // Для хранения интервалов
 
   const checkIdDate = (id: number) => {
     for (const check of dateConfig) {
@@ -61,10 +60,8 @@ const TaskS = ({ caseId }: Itasks) => {
 
   const fuDeleteTask = async (id: number) => {
     try {
-      console.log(id);
       await DeleteTask(id);
       const data = await GetTask();
-      console.log(data);
       taskNow.postTask(data);
       taskNow.postTaskFinished(data);
     } catch (e) {
@@ -72,22 +69,9 @@ const TaskS = ({ caseId }: Itasks) => {
     }
   };
 
-  // Функция для очистки интервала таймера
-  const clearTimerInterval = (taskId: number) => {
-    if (intervalsRef.current[taskId]) {
-      clearInterval(intervalsRef.current[taskId]);
-      delete intervalsRef.current[taskId];
-    }
-  };
-
-  // Функция запуска таймера
   const startTimerForTask = (taskId: number, initialTime: number) => {
-    // Очищаем предыдущий интервал, если есть
-    clearTimerInterval(taskId);
-
     let time = initialTime;
 
-    // Устанавливаем начальное значение
     const minutes = Math.floor(initialTime / 60);
     const seconds = initialTime % 60;
     setTimers((prev) => ({
@@ -95,7 +79,6 @@ const TaskS = ({ caseId }: Itasks) => {
       [taskId]: { minutes, seconds },
     }));
 
-    // Запускаем интервал
     const interval = setInterval(() => {
       if (time > 0) {
         time--;
@@ -108,23 +91,16 @@ const TaskS = ({ caseId }: Itasks) => {
           [taskId]: { minutes, seconds },
         }));
       } else {
-        console.log(`Таймер для задачи ${taskId} завершен`);
         clearInterval(interval);
-        delete intervalsRef.current[taskId];
       }
     }, 1000);
-
-    // Сохраняем ссылку на интервал
-    intervalsRef.current[taskId] = interval;
   };
 
-  // Функция проверки и запуска таймера
   const TimerDeadline = (date: string, taskId: number) => {
     const now = new Date();
     const deadlineDate = new Date(date);
     const diffInSeconds = Math.floor((deadlineDate.getTime() - now.getTime()) / 1000);
 
-    // Если до дедлайна от 0 до 5 минут (300 секунд)
     if (diffInSeconds > 0 && diffInSeconds <= 300) {
       startTimerForTask(taskId, diffInSeconds);
     }
@@ -150,7 +126,6 @@ const TaskS = ({ caseId }: Itasks) => {
         }));
         setDateConfig(dateConfigQ);
 
-        // Запускаем таймеры для задач с уведомлениями
         arrNewTask.forEach((taskItem: Itask) => {
           if (taskItem.notified) {
             TimerDeadline(taskItem.deadline, taskItem.id);
@@ -166,15 +141,8 @@ const TaskS = ({ caseId }: Itasks) => {
 
     return () => {
       clearInterval(DestroyInterval);
-      // Очищаем все таймеры
-      Object.values(intervalsRef.current).forEach((interval) => {
-        clearInterval(interval);
-      });
-      intervalsRef.current = {};
     };
   }, []);
-
-  console.log(taskNow.getTaskFinished());
 
   return (
     <div className="font-normal text-[15px] ">

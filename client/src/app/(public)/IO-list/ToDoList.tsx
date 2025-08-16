@@ -12,6 +12,7 @@ import NewTask from "../../../components/NewTask";
 import TaskInComplite from "@/components/TaskInComplite";
 import TaskDone from "@/components/TaskDone";
 import TaskExpired from "@/components/TaskExpired";
+import MessageTask from "@/message/messageTask";
 
 const ToDoList = () => {
   const { store, user, task, taskNow } = useContext(Context);
@@ -210,6 +211,7 @@ const ToDoList = () => {
         <ErrorMessage />
         <Loading />
         <NewTask />
+        <MessageTask />
       </div>
     </>
   );

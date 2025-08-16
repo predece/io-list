@@ -1,18 +1,36 @@
 "use client";
 
 import { observer } from "mobx-react-lite";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Context } from "@/app/mobx-provider";
 
-interface Imessage {
-  urlStatus: number;
-  nameStatus: string;
-}
-
-const MessageTask = ({ urlStatus, nameStatus }: Imessage) => {
+const MessageTask = () => {
   const { message, task } = useContext(Context);
-  let WebMessage = message.getMessage();
+  let page;
+
+  useEffect(() => {
+    let urlStatus = message.getQuantity();
+    switch (urlStatus) {
+      case 1:
+        page = "Входящие";
+        break;
+      case 2:
+        page = "Просрочены";
+        break;
+      case 3:
+        page = "Выполнено";
+        break;
+    }
+  }, []);
+
+  if (task.getWindowMessageTask()) {
+    console.log(task.getWindowMessageTask());
+    setTimeout(() => {
+      task.postWindowMessageTask(false);
+    }, 2000);
+  }
   const fuMessage = () => {
+    let urlStatus = message.getQuantity();
     switch (urlStatus) {
       case 1:
         task.postWindowTask(true);
@@ -24,14 +42,19 @@ const MessageTask = ({ urlStatus, nameStatus }: Imessage) => {
         task.postWindowDoneTask(true);
         break;
     }
+    task.postWindowMessageTask(false);
   };
 
   return (
     <>
-      <section className="absolute left-0 top-[-1px]">
-        <div>{WebMessage}</div>
-        <button onClick={fuMessage}>{nameStatus}</button>
-      </section>
+      {task.getWindowMessageTask() && (
+        <section className="absolute left-0 bottom-0 m-10 z-9999 border rounded border-gray-300 p-3 text-[16px]">
+          <div>
+            <div>Таски перенесены в: </div>
+            <a onClick={fuMessage}>{page}</a>
+          </div>
+        </section>
+      )}
     </>
   );
 };

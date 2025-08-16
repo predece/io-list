@@ -1,4 +1,5 @@
 import ToDoList from "@/app/(public)/IO-list/ToDoList";
+import TaskNotifications from "@/components/TaskNotifications";
 import ComponentLoader from "@/componentStore/componentLoader";
 import type { Metadata } from "next";
 

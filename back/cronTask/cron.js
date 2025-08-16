@@ -51,12 +51,13 @@ class Cron {
             deadline: {
               [Op.lte]: NowDate,
             },
+            status: { [Op.ne]: "expired" },
           },
         });
-        if (ExpiredTask.length) {
+        if (ExpiredTask.length > 0) {
           for (const task of ExpiredTask) {
             const io = getIo();
-            const ConnectionId = connectionGetUser(task);
+            const ConnectionId = connectionGetUser(task.UserId);
             io.to(ConnectionId).emit("expiredTask", task);
             task.update({ status: "expired" });
           }

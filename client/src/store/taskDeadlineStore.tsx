@@ -20,7 +20,6 @@ class TaskDeadline {
   postTask(configuration: Itask) {
     if (Array.isArray(configuration)) {
       this.task = configuration;
-      console.log(toJS(this.task));
     }
   }
   postTaskDeadline(configuration: Itask) {
