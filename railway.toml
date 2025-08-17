@@ -1,16 +1,5 @@
-    [build]
-    builder = "nixpacks"
+[build]
+  appDirectory = "back"
 
-    [deploy]
-
-      [[services]]
-        name = "backend"
-        command = "npm start"  # или yarn start, если используешь Yarn
-        startTimeout = 300 # добавить, если долго стартует
-        workingDir = "back" # Важно: Указываем рабочую директорию
-
-      [[services]]
-        name = "frontend"
-        command = "npm run start" # или yarn start
-        startTimeout = 300
-        workingDir = "client"  # Важно: Указываем рабочую директорию
+[deploy]
+  startCommand = "node server.js"
