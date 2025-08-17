@@ -1,5 +1,5 @@
 [build]
-  appDirectory = "back"
+  builder = "NIXPACKS"
 
 [deploy]
-  startCommand = "node server.js"
+  startCommand = "cd back && npm start"
