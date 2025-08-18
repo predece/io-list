@@ -76,9 +76,8 @@ const NewTask = () => {
   };
   const fuNewTask = async () => {
     if (config.title && config.deadline) {
-      const data = await AddTask(config);
+      await AddTask(config);
       task.postWindowTask(false);
-      taskNow.postTask(data);
     }
   };
   return (

@@ -66,7 +66,11 @@ const Auth = ({ page }: ICheckPage) => {
             maxAge: 24 * 60 * 60,
             path: "/",
           });
-          localStorage.setItem("userEmail", JSON.stringify(email));
+          setCookie(null, "userEmail", email, {
+            maxAge: 24 * 60 * 60,
+            path: "/",
+          });
+          console.log(email);
           router.push("/IO-list");
         }
       } catch (e) {

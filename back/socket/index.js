@@ -7,7 +7,7 @@ let io;
 exports.initSoket = (server) => {
   io = soketIo(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: "https://client-production-dcf8.up.railway.app",
       methods: ["GET", "POST"],
     },
   });

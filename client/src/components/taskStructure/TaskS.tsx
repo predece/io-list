@@ -26,17 +26,24 @@ interface ItimerState {
   };
 }
 
+function getCookie(name: string) {
+  let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
 const TaskS = ({ caseId }: Itasks) => {
   const { taskNow, task } = useContext(Context);
   const [dateConfig, setDateConfig] = useState<IformDate[]>([]);
   const [timers, setTimers] = useState<ItimerState>({});
+  const [userId, setUserId] = useState<string>("");
 
   const checkIdDate = (id: number) => {
     for (const check of dateConfig) {
       if (check.id == id) {
         return (
           <>
-            <span key={check.id} className="flex gap-1 text-[13px] text-red-700">
+            <span key={check.id} className="flex gap-1 text-[13px] text-red-700" onClick={newDeadline}>
+              <div>Дедлайн: </div>
               <div>{check.day}</div>
               <div>{check.month}</div>
               <div>{check.time}</div>
@@ -46,7 +53,7 @@ const TaskS = ({ caseId }: Itasks) => {
       }
     }
   };
-
+  const newDeadline = () => {};
   const fuFinishedTask = async (id: number) => {
     try {
       const task = await FinishedTask(id);
@@ -109,12 +116,18 @@ const TaskS = ({ caseId }: Itasks) => {
   };
 
   useEffect(() => {
+    const userId = getCookie("userEmail");
+    if (!userId) {
+      return () => {
+        console.error("Error");
+      };
+    }
     const task = async () => {
       try {
         const data = await GetTask();
-        const arrNewTask: Itask[] = data.filter((task: Itask) => task.status === "todo");
-        const arrFinishedTask: Itask[] = data.filter((task: Itask) => task.status === "done");
-        const arrExpiredTask: Itask[] = data.filter((task: Itask) => task.status === "expired");
+        const arrNewTask: Itask[] = data.filter((task: Itask) => task.status === "todo" && task.UserId === userId);
+        const arrFinishedTask: Itask[] = data.filter((task: Itask) => task.status === "done" && task.UserId === userId);
+        const arrExpiredTask: Itask[] = data.filter((task: Itask) => task.status === "expired" && task.UserId === userId);
 
         taskNow.postTask(arrNewTask);
         taskNow.postTaskFinished(arrFinishedTask);

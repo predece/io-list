@@ -8,38 +8,40 @@ const MessageTask = () => {
   const { message, task } = useContext(Context);
   let page;
 
-  useEffect(() => {
+  if (task.getWindowMessageTask()) {
+    setTimeout(() => {
+      task.postWindowMessageTask(false);
+    }, 3000);
     const urlStatus = message.getQuantity();
     switch (urlStatus) {
       case 1:
-        page = "Входящие";
+        page = "Входящее";
         break;
       case 2:
-        page = "Просрочены";
+        page = "Просрочено";
         break;
       case 3:
         page = "Выполнено";
         break;
     }
-  }, []);
-
-  if (task.getWindowMessageTask()) {
-    console.log(task.getWindowMessageTask());
-    setTimeout(() => {
-      task.postWindowMessageTask(false);
-    }, 2000);
   }
   const fuMessage = () => {
     const urlStatus = message.getQuantity();
     switch (urlStatus) {
       case 1:
-        task.postWindowTask(true);
+        task.postWindowTitleTask(true);
+        task.postWindowExpiredTask(false);
+        task.postWindowDoneTask(false);
         break;
       case 2:
         task.postWindowExpiredTask(true);
+        task.postWindowDoneTask(false);
+        task.postWindowTitleTask(false);
         break;
       case 3:
         task.postWindowDoneTask(true);
+        task.postWindowTitleTask(false);
+        task.postWindowExpiredTask(false);
         break;
     }
     task.postWindowMessageTask(false);
@@ -48,10 +50,9 @@ const MessageTask = () => {
   return (
     <>
       {task.getWindowMessageTask() && (
-        <section className="absolute left-0 bottom-0 m-10 z-9999 border rounded border-gray-300 p-3 text-[16px]">
+        <section className="absolute left-0 bottom-0 m-10 z-9999 border rounded border-gray-300 p-3 text-[16px] bg-white">
           <div>
-            <div>Таски перенесены в: </div>
-            <a onClick={fuMessage}>{page}</a>
+            <div className="cursor-pointer hover:text-gray-700" onClick={fuMessage}>{`Таски перенесены в: ${page}`}</div>
           </div>
         </section>
       )}

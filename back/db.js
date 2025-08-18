@@ -1,6 +1,6 @@
-const Sequelize = require("sequelize");
+const { Sequelize } = require("sequelize");
 
-module.exports = new Sequelize(process.env.DATABASE_PUBLIC_URL, {
+module.exports = new Sequelize(process.env.DB_CONFIG, {
   dialect: "postgres",
   protocol: "postgres",
   dialectOptions: {
