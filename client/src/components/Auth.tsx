@@ -24,7 +24,8 @@ const Auth = ({ page }: ICheckPage) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
-  // const [error, setError] = useState<ErrorMessage>({ email: [], password: [] });
+  const [error, setError] = useState<ErrorMessage>({ email: [], password: [] });
+  const [check, setCheck] = useState<number>(0);
   let namePage: boolean = false;
   if (page === "login") {
     namePage = false;
@@ -33,21 +34,21 @@ const Auth = ({ page }: ICheckPage) => {
   }
   const fuLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // if (!email.includes("@")) {
-    //   setError((prevError) => ({ ...prevError, email: [{ message: "Email должен содержать @" }] }));
-    // } else {
-    //   setCheck(check + 1);
-    // }
-    // if (email.length < 8) {
-    //   setError((prevError) => ({ ...prevError, email: [{ message: "Email не менее 9 символов" }] }));
-    // } else {
-    //   setCheck(check + 1);
-    // }
-    // if (password.length < 8) {
-    //   setError((prevPassword) => ({ ...prevPassword, password: [{ message: "Password не менее 9 символом" }] }));
-    // } else {
-    //   setCheck(check + 1);
-    // }
+    if (!email.includes("@")) {
+      setError((prevError) => ({ ...prevError, email: [{ message: "Email должен содержать @" }] }));
+    } else {
+      setCheck(check + 1);
+    }
+    if (email.length < 8) {
+      setError((prevError) => ({ ...prevError, email: [{ message: "Email не менее 9 символов" }] }));
+    } else {
+      setCheck(check + 1);
+    }
+    if (password.length < 8) {
+      setError((prevPassword) => ({ ...prevPassword, password: [{ message: "Password не менее 9 символом" }] }));
+    } else {
+      setCheck(check + 1);
+    }
 
     if (1 === 1) {
       try {
@@ -90,7 +91,7 @@ const Auth = ({ page }: ICheckPage) => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          {/* <div className="h-4 text-left items-center">{error.email.length > 0 && <div className="text-red-500/60 visible text-[0.75rem] ">{error.email[0].message}</div>}</div> */}
+          <div className="h-4 text-left items-center">{error.email.length > 0 && <div className="text-red-500/60 visible text-[0.75rem] ">{error.email[0].message}</div>}</div>
 
           <input
             className="p-2 border border-gray-500/50 rounded transition-colors ease-in-out duration-700 outline-none  focus:border-gray-800"
@@ -99,7 +100,7 @@ const Auth = ({ page }: ICheckPage) => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          {/* <div className="h-4 text-left items-center">{error.password.length > 0 && <div className="text-red-500/60 visible text-[0.75rem] ">{error.password[0].message}</div>}</div> */}
+          <div className="h-4 text-left items-center">{error.password.length > 0 && <div className="text-red-500/60 visible text-[0.75rem] ">{error.password[0].message}</div>}</div>
 
           <div>
             <button className="mt-2 mb-2 cursor-pointer p-1 rounded border hover:bg-gray-300/60 transition-color duration-500 ease-in-out" onClick={(e) => fuLogin(e)}>
