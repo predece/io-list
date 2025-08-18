@@ -1,6 +1,8 @@
+"use client";
+
 import { Context } from "@/app/mobx-provider";
 import { observer } from "mobx-react-lite";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 
 const ErrorMessage = () => {
   const { store } = useContext(Context);

@@ -13,7 +13,7 @@ const buttonStyle = "border p-1 rounded hover:bg-hover-color transition-colors d
 
 const NewTask = () => {
   const { task, taskNow } = useContext(Context);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [stateWindow, setStateWindow] = useState({
     PriorityWindow: false,
     CheckCloseWindow: false,

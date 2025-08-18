@@ -7,7 +7,7 @@ import TaskS from "./taskStructure/TaskS";
 
 const TaskDone = () => {
   const { task } = useContext(Context);
-  let statusTask = task.getWindowDoneTask();
+  const statusTask = task.getWindowDoneTask();
   return (
     <>
       {statusTask && (

@@ -5,7 +5,7 @@ import TaskS from "./taskStructure/TaskS";
 
 const TaskList = () => {
   const { task, taskNow } = useContext(Context);
-  let statusWindow = task.getWindowTitleTask();
+  const statusWindow = task.getWindowTitleTask();
   return (
     <>
       {statusWindow && (
@@ -15,16 +15,6 @@ const TaskList = () => {
             <hr className="mb-2 text-gray-500/10" />
             <TaskS caseId={1} />
           </section>
-          {/* <section>
-            <div>Просрочены:</div>
-            <hr className="mb-2 text-gray-500/10" />
-            <TaskS caseId={2} />
-          </section>
-          <section>
-            <div>Выполнены:</div>
-            <hr className="mb-2 text-gray-500/10" />
-            <TaskS caseId={3} />
-          </section> */}
         </div>
       )}
     </>

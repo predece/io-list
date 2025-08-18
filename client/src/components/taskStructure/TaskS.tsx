@@ -96,13 +96,15 @@ const TaskS = ({ caseId }: Itasks) => {
     }, 1000);
   };
 
-  const TimerDeadline = (date: string, taskId: number) => {
+  const TimerDeadline = (date: Date | null, taskId: number) => {
     const now = new Date();
-    const deadlineDate = new Date(date);
-    const diffInSeconds = Math.floor((deadlineDate.getTime() - now.getTime()) / 1000);
+    if (date) {
+      const deadlineDate = new Date(date);
+      const diffInSeconds = Math.floor((deadlineDate.getTime() - now.getTime()) / 1000);
 
-    if (diffInSeconds > 0 && diffInSeconds <= 300) {
-      startTimerForTask(taskId, diffInSeconds);
+      if (diffInSeconds > 0 && diffInSeconds <= 300) {
+        startTimerForTask(taskId, diffInSeconds);
+      }
     }
   };
 
@@ -110,9 +112,9 @@ const TaskS = ({ caseId }: Itasks) => {
     const task = async () => {
       try {
         const data = await GetTask();
-        let arrNewTask: Itask[] = data.filter((task: Itask) => task.status === "todo");
-        let arrFinishedTask: Itask[] = data.filter((task: Itask) => task.status === "done");
-        let arrExpiredTask: Itask[] = data.filter((task: Itask) => task.status === "expired");
+        const arrNewTask: Itask[] = data.filter((task: Itask) => task.status === "todo");
+        const arrFinishedTask: Itask[] = data.filter((task: Itask) => task.status === "done");
+        const arrExpiredTask: Itask[] = data.filter((task: Itask) => task.status === "expired");
 
         taskNow.postTask(arrNewTask);
         taskNow.postTaskFinished(arrFinishedTask);
@@ -127,7 +129,7 @@ const TaskS = ({ caseId }: Itasks) => {
         setDateConfig(dateConfigQ);
 
         arrNewTask.forEach((taskItem: Itask) => {
-          if (taskItem.notified) {
+          if (taskItem.notified && taskItem.deadline && taskItem.id) {
             TimerDeadline(taskItem.deadline, taskItem.id);
           }
         });

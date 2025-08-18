@@ -9,17 +9,15 @@ const Loading = () => {
     setLoading(true);
 
     setTimeout(() => {
-      setLoading(false);  
+      setLoading(false);
     }, 500);
   }, []);
   return (
     <>
-      {_loading ? (
+      {_loading && (
         <div className="absolute top-0 flex w-screen h-screen items-center justify-center bg-white">
           <img alt="loading" width={50} height={50} src="/25.svg" />
         </div>
-      ) : (
-        <div></div>
       )}
     </>
   );

@@ -7,7 +7,7 @@ import TaskS from "./taskStructure/TaskS";
 
 const TaskExpired = () => {
   const { task } = useContext(Context);
-  let statusTask = task.getWindowExpiredTask();
+  const statusTask = task.getWindowExpiredTask();
   return (
     <>
       {statusTask && (

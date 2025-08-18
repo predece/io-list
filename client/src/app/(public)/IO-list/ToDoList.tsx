@@ -15,11 +15,11 @@ import TaskExpired from "@/components/TaskExpired";
 import MessageTask from "@/message/messageTask";
 
 const ToDoList = () => {
-  const { store, user, task, taskNow } = useContext(Context);
+  const { store, user, task } = useContext(Context);
 
   const [userName, setUserName] = useState<string | null>();
   const [name, setName] = useState<string>("");
-  const [img, setImg] = useState<string>("");
+  const [img, setImg] = useState<File | string>("");
   const [urlImage, setUrlImage] = useState<string | null>();
   const [state, setState] = useState<boolean>(true);
   const [checkPersonalization, setCheckPersonalization] = useState<boolean>(false);
@@ -46,7 +46,7 @@ const ToDoList = () => {
       formData.append("img", img);
     }
     if (name || img) {
-      let parseUser = localStorage.getItem("userEmail");
+      const parseUser = localStorage.getItem("userEmail");
       if (parseUser) {
         const userEmail = JSON.parse(parseUser);
         formData.append("email", userEmail);
@@ -64,6 +64,7 @@ const ToDoList = () => {
     { checkOpenBorder: checkPersonalization ? "bg-gray-200/80 rounded ease-in-out" : "" },
   ];
   useEffect(() => {
+    setState(true);
     setTimeout(() => {
       try {
         setUserName(user.getUser()?.name);
@@ -85,7 +86,7 @@ const ToDoList = () => {
                   onClick={(e) => personalizationUser(e)}
                 >
                   <Image
-                    src={urlImage ? `http://localhost:7000/${urlImage}` : "/DefaulUser.svg"}
+                    src={urlImage ? `https://back-production-533d.up.railway.app/${urlImage}` : "/DefaulUser.svg"}
                     alt="DefaultUser"
                     width={0}
                     height={0}
@@ -117,7 +118,15 @@ const ToDoList = () => {
                   <div className="flex gap-1">
                     <label className="flex cursor-pointer items-center w-[160px] h-9 p-1 border border-gray-500/50 rounded transition-colors ease-in-out duration-700 outline-none  focus:border-gray-800">
                       <p className="text-gray-500 text-[15px]">Выберите файл</p>
-                      <input className="hidden" type="file" onChange={(e) => setImg(e.target.files[0])} />
+                      <input
+                        className="hidden"
+                        type="file"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            setImg(e.target.files[0]);
+                          }
+                        }}
+                      />
                     </label>
                     <button
                       className="cursor-pointer border rounded p-2 border-gray-500/50 hover:bg-gray-200/80 transition duration-300 ease-in-out hover:translate-x-1 w-[34px]"
