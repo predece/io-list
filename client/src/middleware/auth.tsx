@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
 
   if (token) {
-    const res = await fetch("https://back-production-533d.up.railway.app/api/auth", {
+    const res = await fetch("https://back-production-533d.up.railway.app//api/auth", {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) {

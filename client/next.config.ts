@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
         port: "7000",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   eslint: {

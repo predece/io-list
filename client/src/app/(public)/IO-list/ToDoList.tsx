@@ -2,10 +2,12 @@
 
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { Context } from "@/app/mobx-provider";
-import { useContext } from "react";
-import { Config } from "@/http/Config";
+import { useEffect, useState, useContext } from "react"; // Импортируйте useContext и useState
+
+import { Context } from "@/app/mobx-provider"; // Укажите правильный путь к Context
+
+import { Config } from "@/http/Config"; // Укажите правильный путь к Config
+
 import ErrorMessage from "@/error/errorMessage";
 import Loading from "../../../components/Loading";
 import NewTask from "../../../components/NewTask";
@@ -13,13 +15,16 @@ import TaskInComplite from "@/components/TaskInComplite";
 import TaskDone from "@/components/TaskDone";
 import TaskExpired from "@/components/TaskExpired";
 import MessageTask from "@/message/messageTask";
+import { getCookie } from "@/components/taskStructure/TaskS";
+import Link from "next/link";
+import { CONFIG } from "@/config/page.config";
 
 const ToDoList = () => {
   const { store, user, task } = useContext(Context);
 
   const [userName, setUserName] = useState<string | null>();
   const [name, setName] = useState<string>("");
-  const [img, setImg] = useState<File | string>("");
+  const [img, setImg] = useState<File | null>(null);
   const [urlImage, setUrlImage] = useState<string | null>();
   const [state, setState] = useState<boolean>(true);
   const [checkPersonalization, setCheckPersonalization] = useState<boolean>(false);
@@ -39,23 +44,33 @@ const ToDoList = () => {
   };
   const FuSaveConfig = async (type: string) => {
     const formData = new FormData();
+
     if (type === "name" && name.length <= 16) {
       console.log(name.length);
       formData.append("name", name);
-    } else {
+    } else if (type === "image" && img) {
       formData.append("img", img);
+    } else {
+      store.postError("Файл изображения не выбран");
+      return;
     }
-    if (name || img) {
-      const parseUser = localStorage.getItem("userEmail");
-      if (parseUser) {
-        const userEmail = JSON.parse(parseUser);
+
+    if ((type === "name" && name) || (type === "image" && img)) {
+      const userEmail = getCookie("userEmail");
+      if (userEmail) {
         formData.append("email", userEmail);
-        const data = await Config(formData);
-        if (data.data) {
-          setUserName(data.data.name);
-          setUrlImage(data.data.img);
+        try {
+          console.log("FormData before sending:", formData.get("img"));
+          const data = await Config(formData);
+          if (data?.data) {
+            setUserName(data.data.name);
+            setUrlImage(data.data.img);
+          }
+          store.postError(data?.message || "Неизвестная ошибка");
+        } catch (error) {
+          console.error("Ошибка при сохранении конфигурации:", error);
+          store.postError("Ошибка сети при сохранении.");
         }
-        store.postError(data.message);
       }
     }
   };
@@ -77,16 +92,19 @@ const ToDoList = () => {
   return (
     <>
       <div className="w-screen h-screen grid grid-cols-[auto_1fr] overflow-x-hidden overflow-y-auto">
+        <Link className="fixed  right-1 m-2 border p-2 rounded-[50%] cursor-pointer flex text-center hover:bg-gray-200/80 duration-300 ease-in-out border-gray-800/50" href={CONFIG.getHellowPage()}>
+          Back
+        </Link>
         {state ? (
-          <section className="w-55 2xl:w-85 xl:w-80 lg:w-70 md:w-70 sm:w-65">
-            <section className="fixed  w-55 2xl:w-85 xl:w-80 lg:w-70 md:w-70 sm:w-65 bg-[#FCFAF8] p-5 transition-all h-full min-h-screen duration-200">
+          <section className="w-55 2xl:w-85 xl:w-80 lg:w-70 md:w-70 sm:w-65  bg-[#FCFAF8]">
+            <section className="fixed  w-55 2xl:w-85 xl:w-80 lg:w-70 md:w-70 sm:w-65 p-3 transition-all h-full min-h-screen duration-200">
               <section className="flex justify-between h-15">
                 <button
                   className={`flex items-center h-auto cursor-pointer transition-color p-[0px_10px] duration-200 ease-in-out hover:bg-hover-color rounded ${visibilityClass[1].checkOpenBorder}`}
                   onClick={(e) => personalizationUser(e)}
                 >
                   <Image
-                    src={urlImage ? `https://back-production-533d.up.railway.app/${urlImage}` : "/DefaulUser.svg"}
+                    src={urlImage ? urlImage : "/DefaulUser.svg"}
                     alt="DefaultUser"
                     width={0}
                     height={0}
@@ -121,9 +139,12 @@ const ToDoList = () => {
                       <input
                         className="hidden"
                         type="file"
+                        name="img"
                         onChange={(e) => {
                           if (e.target.files && e.target.files[0]) {
                             setImg(e.target.files[0]);
+                          } else {
+                            setImg(null);
                           }
                         }}
                       />

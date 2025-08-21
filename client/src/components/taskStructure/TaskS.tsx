@@ -26,7 +26,7 @@ interface ItimerState {
   };
 }
 
-function getCookie(name: string) {
+export function getCookie(name: string) {
   let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"));
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
@@ -35,7 +35,6 @@ const TaskS = ({ caseId }: Itasks) => {
   const { taskNow, task } = useContext(Context);
   const [dateConfig, setDateConfig] = useState<IformDate[]>([]);
   const [timers, setTimers] = useState<ItimerState>({});
-  const [userId, setUserId] = useState<string>("");
 
   const checkIdDate = (id: number) => {
     for (const check of dateConfig) {

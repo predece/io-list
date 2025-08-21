@@ -8,6 +8,9 @@ class Configuration {
   getIOList() {
     return "/IO-list";
   }
+  getHellowPage() {
+    return "/";
+  }
 }
 
 export const CONFIG = new Configuration();

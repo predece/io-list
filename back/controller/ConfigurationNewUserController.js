@@ -1,6 +1,4 @@
-const path = require("path");
 const User = require("../module/User");
-const uuid = require("uuid");
 
 class ProfileUser {
   async AddProfile(req, res) {
@@ -8,14 +6,12 @@ class ProfileUser {
       if (!req.body.email) {
         return res.json({ message: "Ошибка, повторите запрос позже" });
       }
+      if (!req.file.path) {
+        return res.json({ message: "Ошибка сохранения задачи, попробуйте еще раз" });
+      }
       const { email, name } = req.body;
       let configUser = {};
-      let fileImage = null;
-      if (req.files) {
-        const { img } = req.files;
-        fileImage = uuid.v4() + ".jpg";
-        img.mv(path.resolve(__dirname, "..", "static", fileImage));
-      }
+      configUser.img = req.file.path;
       if (email && name) {
         const checkConfigUser = await User.findOne({ where: { email } });
         if (checkConfigUser.name === name) {
@@ -24,9 +20,7 @@ class ProfileUser {
           configUser.name = name;
         }
       }
-      if (fileImage) {
-        configUser.img = fileImage;
-      }
+
       const user = await User.findOne({ where: { email } });
       const data = await user.update(configUser);
       return res.json({ data });

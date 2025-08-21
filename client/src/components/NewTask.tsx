@@ -8,7 +8,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import type { Itask } from "@/store/taskDeadlineStore";
 import { AddTask } from "@/http/Task";
-
+import { getCookie } from "./taskStructure/TaskS";
 const buttonStyle = "border p-1 rounded hover:bg-hover-color transition-colors duration-400 ease-in-out cursor-pointer w-30 text-gray-400 border-gray-300";
 
 const NewTask = () => {
@@ -31,9 +31,9 @@ const NewTask = () => {
   });
 
   useEffect(() => {
-    const userId = localStorage.getItem("userEmail");
+    const userId = getCookie("userEmail");
     if (userId) {
-      setConfig((state) => ({ ...state, UserId: JSON.parse(userId) }));
+      setConfig((state) => ({ ...state, UserId: userId }));
     }
   }, []);
 
@@ -76,8 +76,9 @@ const NewTask = () => {
   };
   const fuNewTask = async () => {
     if (config.title && config.deadline) {
-      await AddTask(config);
+      const taskNew = await AddTask(config);
       task.postWindowTask(false);
+      taskNow.postTask(taskNew);
     }
   };
   return (

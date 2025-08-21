@@ -14,7 +14,7 @@ export const GetTask = async () => {
 };
 
 export const FinishedTask = async (id: number) => {
-  const { data } = await $host.get(`api/task/delete/${id}`);
+  const { data } = await $host.get(`api/task/finished/${id}`);
   return data;
 };
 

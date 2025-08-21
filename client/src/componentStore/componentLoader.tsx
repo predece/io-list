@@ -5,16 +5,16 @@ import { useEffect } from "react";
 import { DataUser } from "@/http/HostAuth";
 import { useContext } from "react";
 import { Context } from "@/app/mobx-provider";
+import { getCookie } from "@/components/taskStructure/TaskS";
 
 const CompopentLoader = () => {
   const { user } = useContext(Context);
   useEffect(() => {
     const UpdateUser = async () => {
       try {
-        const UserEmail = localStorage.getItem("userEmail");
+        const UserEmail = getCookie("userEmail");
         if (UserEmail) {
-          const parseEmail = JSON.parse(UserEmail);
-          const userConfig = await DataUser(parseEmail);
+          const userConfig = await DataUser(UserEmail);
           if (userConfig) {
             const { name, img } = userConfig.data;
             user.postUser({ name, img });

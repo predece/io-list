@@ -7,6 +7,7 @@ import { useContext } from "react";
 import { Context } from "@/app/mobx-provider";
 import type { Itask } from "@/store/taskDeadlineStore";
 let socket: any;
+import { getCookie } from "./taskStructure/TaskS";
 
 interface ItaskNotifications {
   task: Itask;
@@ -15,8 +16,8 @@ interface ItaskNotifications {
 const TaskNotifications = () => {
   const { taskNow, message, task } = useContext(Context);
   useEffect(() => {
-    socket = io("https://back-production-533d.up.railway.app/");
-    const userId = localStorage.getItem("userEmail");
+    socket = io("https://back-production-533d.up.railway.app//");
+    const userId = getCookie("userEmail");
     if (userId) {
       socket.emit("register", userId);
     }
