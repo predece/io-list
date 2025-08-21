@@ -18,8 +18,9 @@ const ErrorMessage = () => {
   return (
     <>
       {store.getError() && (
-        <section className="absolute top-0 flex w-screen h-screen items-center justify-center backdrop-blur-[5px] transition duration-900 " onClick={(e) => OCwindow(e)}>
+        <section className="absolute top-0 flex flex-col  w-screen h-screen items-center justify-center backdrop-blur-[5px] transition duration-900 " onClick={(e) => OCwindow(e)}>
           <div>{error}</div>
+          <div className="text-[13px] text-gray-500/80">*нажмите в любое место, чтобы закрыть данное окно</div>
         </section>
       )}
     </>

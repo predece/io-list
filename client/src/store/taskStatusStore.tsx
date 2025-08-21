@@ -6,7 +6,7 @@ class Task {
   onClickOpenWindowDoneTask: boolean = false; // Открытие окна "Выполнено"
   onClickOpenWindowExpiredTask: boolean = false; // Открытие окна "Просрочено"
   onClickOpenWindowMessageTask: boolean = false; // Открытие окна "Уведомление о таксах"
-
+  onWindowLoading: boolean = false; // Окно загрузки (модификация)
   constructor() {
     makeAutoObservable(this);
   }
@@ -35,6 +35,11 @@ class Task {
       this.onClickOpenWindowMessageTask = status;
     }
   }
+  postWindowLoading(state: boolean) {
+    if (this.onWindowLoading != state) {
+      this.onWindowLoading = state;
+    }
+  }
 
   getWindowTask() {
     return this.onClickOpenWindowNewTask;
@@ -50,6 +55,9 @@ class Task {
   }
   getWindowMessageTask() {
     return this.onClickOpenWindowMessageTask;
+  }
+  getWindowLoading() {
+    return this.onWindowLoading;
   }
 }
 

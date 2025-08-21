@@ -3,15 +3,22 @@ const User = require("../module/User");
 class ProfileUser {
   async AddProfile(req, res) {
     try {
+      let configUser = {};
+
       if (!req.body.email) {
         return res.json({ message: "Ошибка, повторите запрос позже" });
       }
-      if (!req.file.path) {
-        return res.json({ message: "Ошибка сохранения задачи, попробуйте еще раз" });
+      if (req.file) {
+        if (!req.file.path) {
+          return res.json({ message: "Ошибка сохранения задачи, попробуйте еще раз" });
+        } else {
+          configUser.img = req.file.path;
+        }
       }
+
       const { email, name } = req.body;
-      let configUser = {};
-      configUser.img = req.file.path;
+      console.log(email, name);
+
       if (email && name) {
         const checkConfigUser = await User.findOne({ where: { email } });
         if (checkConfigUser.name === name) {

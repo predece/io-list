@@ -2,16 +2,30 @@
 
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { Context } from "@/app/mobx-provider";
 
 const Loading = () => {
+  const { task } = useContext(Context);
   const [_loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (task.getWindowLoading()) {
+      setLoading(true);
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    }
+  }, [task.getWindowLoading()]);
+
   useEffect(() => {
     setLoading(true);
-
     setTimeout(() => {
       setLoading(false);
     }, 500);
   }, []);
+
   return (
     <>
       {_loading && (

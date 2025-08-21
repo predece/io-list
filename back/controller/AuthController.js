@@ -8,18 +8,22 @@ const token = ({ email, role }) => {
 
 class AuthController {
   async register(req, res) {
-    const { email, password, role } = req.body;
-    const checkUser = await User.findOne({ where: { email } });
-    if (!email || !password) {
-      res.json({ message: "Email and password requred" });
+    try {
+      const { email, password, role } = req.body;
+      const checkUser = await User.findOne({ where: { email } });
+      if (!email || !password) {
+        res.json({ message: "Email and password requred" });
+      }
+      if (checkUser > 0) {
+        return res.json({ message: "This user already exist" });
+      }
+      const hashPassword = await bcrypt.hash(password, 12);
+      const data = await User.create({ email, password: hashPassword, role });
+      const jwtToken = await token({ email, role });
+      return res.json({ jwtToken });
+    } catch (e) {
+      console.error(e);
     }
-    if (checkUser > 0) {
-      return res.json({ message: "This user already exist" });
-    }
-    const hashPassword = await bcrypt.hash(password, 12);
-    const data = await User.create({ email, password: hashPassword, role });
-    const jwtToken = await token({ email, role });
-    return res.json({ jwtToken });
   }
   async login(req, res) {
     const { email, password } = req.body;

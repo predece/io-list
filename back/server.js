@@ -12,9 +12,7 @@ const http = require("http");
 const { initSoket } = require("./socket");
 const server = http.createServer(app);
 
-
 app.use(cors());
-
 
 initSoket(server);
 
@@ -39,4 +37,3 @@ const start = async () => {
   }
 };
 start();
-

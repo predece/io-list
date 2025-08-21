@@ -6,7 +6,7 @@ const { connectionGetUser } = require("../socket/user");
 
 class Cron {
   checkCron() {
-    cron.schedule("*/30 * * * * *", async () => {
+    cron.schedule("*/5 * * * * *", async () => {
       try {
         console.log("Проверка дедлайна задач");
 
@@ -43,7 +43,7 @@ class Cron {
         console.error("Ошибка при проверке дедлайнов", e);
       }
     });
-    cron.schedule("*/30 * * * * *", async () => {
+    cron.schedule("*/5 * * * * *", async () => {
       try {
         const NowDate = new Date();
         const ExpiredTask = await Task.findAll({

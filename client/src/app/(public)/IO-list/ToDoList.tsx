@@ -45,30 +45,42 @@ const ToDoList = () => {
   const FuSaveConfig = async (type: string) => {
     const formData = new FormData();
 
-    if (type === "name" && name.length <= 16) {
-      console.log(name.length);
+    if (type === "name" && name.length <= 16 && name.length > 0) {
       formData.append("name", name);
-    } else if (type === "image" && img) {
+      console.log(name);
+    } else if (type === "name" && (name.length > 16 || name.length < 1)) {
+      store.postError("Ваше имя либо не задано, либо превышает 16 символов");
+    }
+    if (type === "image" && img) {
       formData.append("img", img);
-    } else {
+    } else if (type === "image" && !img) {
       store.postError("Файл изображения не выбран");
       return;
     }
-
+    if (img && img.size >= 5 * 1024 * 1024) {
+      store.postError("Изображение не должно превышать 5MB");
+    }
     if ((type === "name" && name) || (type === "image" && img)) {
       const userEmail = getCookie("userEmail");
       if (userEmail) {
         formData.append("email", userEmail);
         try {
-          console.log("FormData before sending:", formData.get("img"));
+          if (img) {
+            task.postWindowLoading(true);
+          }
+
           const data = await Config(formData);
+          console.log(data.data.img);
           if (data?.data) {
             setUserName(data.data.name);
             setUrlImage(data.data.img);
           }
-          store.postError(data?.message || "Неизвестная ошибка");
+
+          console.log(task.getWindowLoading());
+          if (img && data?.data.img) {
+            task.postWindowLoading(false);
+          }
         } catch (error) {
-          console.error("Ошибка при сохранении конфигурации:", error);
           store.postError("Ошибка сети при сохранении.");
         }
       }
@@ -115,46 +127,57 @@ const ToDoList = () => {
                   <span className="ml-4">{userName ? userName : "user"}</span>
                   <div className="ml-4">{">"}</div>
                 </button>
+                {checkPersonalization && <div className="absolute inset-0 w-screen h-screen z-999" onClick={() => setCheckPersonalization(false)}></div>}
                 <div
-                  className={`absolute top-26 rounded border w-56 p-3 grid grid-rows-4 gap-3 transition-all duration-600 border-gray-800/50 z-999 bg-[#FCFAF8] shadow-[6px_5px_10px_gray] ${visibilityClass[0].checkOpen}`}
+                  className={`absolute top-26 rounded border w-60 p-3 flex flex-col items-center gap-3 justify-center transition-all duration-600 border-gray-800/50 z-9999 bg-[#FCFAF8] shadow-[6px_5px_10px_gray] ${visibilityClass[0].checkOpen}`}
                 >
-                  <div>Добавьте имя</div>
-                  <div className="flex gap-1">
-                    <input
-                      className="p-1 w-40 border border-gray-500/50 rounded transition-colors ease-in-out duration-700 outline-none  focus:border-gray-800 text-[15px]"
-                      placeholder="Name"
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                    <button
-                      className="cursor-pointer border rounded p-2 border-gray-500/50 hover:bg-gray-200/80 transition duration-300 ease-in-out hover:translate-x-1"
-                      onClick={() => FuSaveConfig("name")}
-                    >
-                      <Image src="/SaveConfigIcon.svg" alt="config-IO" width={20} height={20} />
-                    </button>
-                  </div>
-                  <div>Добавьте фото</div>
-                  <div className="flex gap-1">
-                    <label className="flex cursor-pointer items-center w-[160px] h-9 p-1 border border-gray-500/50 rounded transition-colors ease-in-out duration-700 outline-none  focus:border-gray-800">
-                      <p className="text-gray-500 text-[15px]">Выберите файл</p>
+                  <div>
+                    <div>Добавьте имя</div>
+                    <div className="flex gap-1 mt-2 ">
                       <input
-                        className="hidden"
-                        type="file"
-                        name="img"
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files[0]) {
-                            setImg(e.target.files[0]);
-                          } else {
-                            setImg(null);
-                          }
-                        }}
+                        className={`p-1  w-40 h-10 border border-gray-500/50 rounded transition-colors ease-in-out duration-700 outline-none  focus:border-gray-800 text-[15px] ${
+                          name && (name.length <= 16 ? "border-green-400 focus:border-green-600" : "border-red-400 focus:border-red-600")
+                        }`}
+                        placeholder="Name"
+                        onChange={(e) => setName(e.target.value)}
                       />
-                    </label>
-                    <button
-                      className="cursor-pointer border rounded p-2 border-gray-500/50 hover:bg-gray-200/80 transition duration-300 ease-in-out hover:translate-x-1 w-[34px]"
-                      onClick={() => FuSaveConfig("image")}
-                    >
-                      <Image src="/SaveConfigIcon.svg" alt="config-IO" width={20} height={20} />
-                    </button>
+                      <button
+                        className="cursor-pointer border rounded p-2 border-gray-500/50 hover:bg-gray-200/80 transition duration-300 ease-in-out hover:translate-x-1"
+                        onClick={() => FuSaveConfig("name")}
+                      >
+                        <Image src="/SaveConfigIcon.svg" alt="config-IO" width={20} height={20} />
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <div>Добавьте фото</div>
+                    <div className="flex gap-1 mt-2 ">
+                      <label
+                        className={`flex cursor-pointer items-center w-40 p-1 border border-gray-500/50 rounded transition-colors ease-in-out duration-700 outline-none  focus:border-gray-800 ${
+                          img && (img.size < 1024 * 1024 * 5 ? "border-green-400" : "border-red-400")
+                        }`}
+                      >
+                        <p className="text-gray-500 text-[15px]">{!img ? "Выберите файл" : "Файл выбран"}</p>
+                        <input
+                          className="hidden"
+                          type="file"
+                          name="img"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setImg(e.target.files[0]);
+                            } else {
+                              setImg(null);
+                            }
+                          }}
+                        />
+                      </label>
+                      <button
+                        className="cursor-pointer border rounded p-2 border-gray-500/50 hover:bg-gray-200/80 transition duration-300 ease-in-out hover:translate-x-1"
+                        onClick={() => FuSaveConfig("image")}
+                      >
+                        <Image src="/SaveConfigIcon.svg" alt="config-IO" width={20} height={20} />
+                      </button>
+                    </div>
                   </div>
                 </div>
 
